@@ -1,0 +1,22 @@
+---
+synopsis: 'use local composite actions in CI'
+packages: []
+---
+This defines a number of local composite actions and modifies `validate.yml`
+to make use of them. Two of them simplify `validate.yml` considerably; the
+other two less so, but will be useful in a future tier-2 job to ensure that
+the main and tier 2 validate operations stay in sync.
+
+It also defines a central configuration file `.github/config.yml` containing the
+various magic numbers/lists that bootstrap and validate use. Those have been
+modified to use `config.yml`, as has the `Makefile`.
+
+The new actions, found in `.github/actions` per convention, are:
+
+- `cabal-setup`: does all the preliminary setup for a Cabal job
+- `validate-build`: does `cabal-setup` and then builds cabal for validate
+- `validate-old`: does `cabal-setup` and then validates a `validate-build` cabal against older GHCs
+- `dogfooding`: does `cabal-setup` and then uses a `validate-build` cabal to build itself
+
+As yet, there are no actions for the tests, because they're just a couple lines
+of shell aside from `cabal-setup`. This may change in the future.
